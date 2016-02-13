@@ -1,8 +1,9 @@
 from alchemyapi import AlchemyAPI
 import json
 
-demo_text = "Yesterday dumb Bob destroyed my fancy iPhone in beautiful Denver, Colorado. I guess I will have to head over to the Apple Store and buy a new one."
+alchemyapi = AlchemyAPI()
 
+demo_text = "Hi i am andrew. Trying the thing out."
 abbreviations = {'dr.': 'doctor', 'mr.': 'mister', 'bro.': 'brother', 'bro': 'brother', 'mrs.': 'mistress', 'ms.': 'miss', 'jr.': 'junior', 'sr.': 'senior',
                  'i.e.': 'for example', 'e.g.': 'for example', 'vs.': 'versus'}
 terminators = ['.', '!', '?']
@@ -56,5 +57,24 @@ def find_all(a_str, sub):
 # TODO extract group messages, should be clean using groupme api call
 
 # TODO return sentiments of each sentence in array
+def sent(str):
+  init = alchemyapi.sentiment('text', str)
+  return init['docSentiment']['score']
+
+# returns the sentiment of each string in an array
+def sentArr(list):
+  return map(sent, list)
 
 # TODO show when changes in sentiment happens - probably important in convo
+def sentChanged(list, sensitivity):
+  sentiments = sentArr(list).append(0)
+  result = []
+  for x in range(len(list)):
+    if abs(sentiments[x] - sentiments[x+1]) > sensitivity:
+      result.append(list[x])
+  return result
+
+print sentArr(find_sentences(demo_text))
+#print sentChanged(find_sentences(demo_text), 0.03)
+
+# TODO 
