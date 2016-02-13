@@ -1,41 +1,28 @@
-# alchemyapi_python #
+Instructions:
 
-A sdk for AlchemyAPI using Python
+To initialize summarization for text without title, use:
 
+groupSummary(text) from main.py
 
-## AlchemyAPI ##
+To initialize summarization for text with title, use:
 
-AlchemyAPI offers artificial intelligence as a service. We teach computers to learn how to read and see, and apply our technology to text analysis and image recognition through a cloud-based API. Our customers use AlchemyAPI to transform their unstructured content such as blog posts, news articles, social media posts and images into much more useful structured data. 
+articleSummary(title, text) from main.py
 
-AlchemyAPI is a tech startup located in downtown Denver, Colorado. As the world’s most popular text analysis service, AlchemyAPI serves over 3.5 billion monthly API requests to over 35,000 developers. To enable our services, we use artificial intelligence, machine learning, neural networks, natural language processing and massive-scale web crawling. Our technology powers use cases in a variety of industry verticals, including social media monitoring, business intelligence, content recommendations, financial trading and targeted advertising.
+Issues and possible improvements:
+1. I'm trying to output a sentiment with the summaries, but the sentiment
+function won't work with the output of articleSummaries or groupSummaries
 
-More information at: http://www.alchemyapi.com
+They work for manually inputted lists of strings though
 
+2. Maybe it'd be cooler too if we could use emotions instead of plain sentiment
+like when they show the bullet points of what you missed, the color of the box
+changes based on what the emotion is
 
+3 To use even more Watson tools, we could check the personality of each person 
+in the group chat while you were away
 
-## API Key ##
+4. To implement the news article suggester, we need at least a simple recommender
+system, or use an API to make up for the lack of it
 
-To use AlchemyAPI, you'll need to obtain an API key and attach that key to all requests. If you do not already have a key, please visit: http://www.alchemyapi.com/api/register.html
+5. Echo integration?? All that's finished so far is the text summary, and I'd say it's pretty effective
 
-
-
-## Requirements ##
-
-The Python SDK requires that you install the [Requests Python module](http://docs.python-requests.org/en/latest/user/install/#install).
-
-
-
-## Getting Started with the Python SDK ##
-
-To get started and run the example, simply:
-
-	git clone https://github.com/AlchemyAPI/alchemyapi_python.git
-	cd alchemyapi_python
-	python alchemyapi.py YOUR_API_KEY
-	python example.py
-
-
-Just replace YOUR_API_KEY with your 40 character API key from AlchemyAPI, and you should be good to go.
-
-	
-	
