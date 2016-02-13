@@ -78,13 +78,13 @@ def sentChanged(list, sensitivity):
 print sentArr(find_sentences(demo_text))
 #print sentChanged(find_sentences(demo_text), 0.03)
 
-<<<<<<< HEAD
+#<<<<<<< HEAD
 # TODO: extract topic of conversation at the moment
 # "flow" of conversation, can also check if topic changed
 #def topic(str):
 #  init = alchemyapi.idk yet('text', str)
 #  return init[][] idk yet
-=======
+#=======
 # TODO 
 
 def current_topic(str):
@@ -103,4 +103,4 @@ def topicChanged(list, currenttopic):
   return solutions
 
 
->>>>>>> origin/master
+#>>>>>>> origin/master
