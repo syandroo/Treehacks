@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 from textteaser import TextTeaser
 from alchemyapi import AlchemyAPI
@@ -36,6 +36,15 @@ def sentimenter(str):
 def sentimentize(list):
   return map(sentimenter, list)
 
-print sentimentize(groupSummary(inputText))
-#print sentimentize(articleSummary(inputTitle, inputText))
+def removeNonAscii(list): 
+  return map(lambda s: "".join(filter(lambda x: ord(x)<128, s)), list)
 
+
+#print removeNonAscii(groupSummary(inputText))
+print ['hello, there', 'this is a strawberry', 'have fun', 'i hate you'].type()
+print sentimentize(['hello, there', 'this is a strawberry', 'have fun', 'i hate you'])
+tester = removeNonAscii(articleSummary(inputTitle, inputText))
+print tester
+
+#for sentence in groupSummary(inputText):
+#  print sentence

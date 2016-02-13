@@ -1,25 +1,28 @@
-TextTeaser
-=============
+Instructions:
 
-TextTeaser is an automatic summarization algorithm.
+To initialize summarization for text without title, use:
 
-This is now the official version of TextTeaser. Future developments of TextTeaser will be in this repository.
+groupSummary(text) from main.py
 
-The original Scala TextTeaser can still be accessed [here](https://github.com/MojoJolo/textteaser).
+To initialize summarization for text with title, use:
 
-### Installation
+articleSummary(title, text) from main.py
 
-    >>> git clone https://github.com/DataTeaser/textteaser.git
-    >>> pip install -r textteaser/requirements.txt
+Issues and possible improvements:
+1. I'm trying to output a sentiment with the summaries, but the sentiment
+function won't work with the output of articleSummaries or groupSummaries
 
-### How to Use
+They work for manually inputted lists of strings though
 
-    >>> from textteaser import TextTeaser
-    >>> tt = TextTeaser()
-    >>> tt.summarize(title, text)
+2. Maybe it'd be cooler too if we could use emotions instead of plain sentiment
+like when they show the bullet points of what you missed, the color of the box
+changes based on what the emotion is
 
-You can also test TextTeaser by running `python test.py`.
+3 To use even more Watson tools, we could check the personality of each person 
+in the group chat while you were away
 
-### Commercial Support
+4. To implement the news article suggester, we need at least a simple recommender
+system, or use an API to make up for the lack of it
 
-Commercial support for TextTeaser or custom summarizers can be provided by [DataTeaser](http://www.datateaser.com/?textteaser).
+5. Echo integration?? All that's finished so far is the text summary, and I'd say it's pretty effective
+
