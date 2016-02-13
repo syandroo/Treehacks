@@ -6,10 +6,7 @@ import sys
 
 import text_analysis
 import groupme_listener
-from groupme_constants import groupme_access_token
 
-
-ACCESS_TOKEN = groupme_access_token
 
 # article source: https://blogs.dropbox.com/developers/2015/03/limitations-of-the-get-method-in-http/
 inputTitle = "Limitations of the GET method in HTTP"
@@ -19,8 +16,8 @@ DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    group_data = groupme_listener.intiate_groupme_interaction(ACCESS_TOKEN)
-    messages_info, messages_text_only = groupme_listener.process_group_data(group_data, ACCESS_TOKEN)
+    group_data, access_token = groupme_listener.intiate_groupme_interaction()
+    messages_info, messages_text_only = groupme_listener.process_group_data(group_data, access_token)
     print text_analysis.groupSummary(messages_text_only)
     
 
