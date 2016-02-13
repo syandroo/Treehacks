@@ -66,6 +66,7 @@ def sentArr(list):
   return map(sent, list)
 
 # TODO show when changes in sentiment happens - probably important in convo
+# consumes a list of strings and produces a list of strings that show a sentiment change > sensitivity
 def sentChanged(list, sensitivity):
   sentiments = sentArr(list).append(0)
   result = []
@@ -78,3 +79,20 @@ print sentArr(find_sentences(demo_text))
 #print sentChanged(find_sentences(demo_text), 0.03)
 
 # TODO 
+
+def current_topic(str):
+  # INPUT: a string(sentence)
+  # OUTPUT: the most popular concepts
+ init = alchemyapi.entities('text', str, {'sentiment': 1}).pop[0]
+ return init['text']#.encode('utf-8')
+
+def topicChanged(list, currenttopic):
+  #INPUT: a listof sentecnes, current_topic
+  #Output: a list of sentences that changed topic
+  solution = []
+  for index in range(len(list)):
+    if (current_topic(list[index])!=currenttopic):
+      solution.append(list[index])
+  return solutions
+
+
