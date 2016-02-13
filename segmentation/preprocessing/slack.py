@@ -36,13 +36,29 @@ def find_urls(text):
     '''
     return re.findall(r"(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})", text)
 
+def sanitize(text, list_of_phrases):
+    '''
+    >>> sanitize('@andrew: hello@andrew', ['@andrew'])
+    ': hello'
+    '''
+    for phrase in list_of_phrases:
+        text = text.replace(phrase, '')
+    return text
+
 def parse_body(text):
     data = {
         'emojis': find_emojis(text),
         'mentions': find_mentions(text),
+        'urls': find_urls(text),
         'text': text,
-        'url': find_urls(text)
     }
+
+    sanitized = sanitize(text, ['@' + item for item in data['mentions']])
+    sanitized = sanitize(sanitized, [':' + item + ':' for item in data['emojis']])
+    sanitized = sanitize(sanitized, data['urls'])
+
+    data['sanitized'] = sanitized
+
     return data
 
 doctest.testmod()
