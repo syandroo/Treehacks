@@ -19,11 +19,11 @@ def response_generator(json_input):
 	content = json[content]
 	if (emotion_score < -.5):
 		angry_responses = ["%s mentioned %s angrily" % (user, content), "%s is feeling extremely passionated for %s" % (user,content)]
+		return random.choice(angry_responses)
 	else if (emotion_score > 0.5):
 		happy_responses = ["%s talked about %s in a very cheerful mood" % (user, content), "%s is feeling happy and said %s" % (user,content),"%s is having a great conversation on %s" % (user,content)]
+		return random.choice(happy_responses)
 	else:
 		mutural_responses = ["%s elaborated on %s" % (user, contient), "%s mentioned %s" % (user,contient)]
-	responses = angry_responses + happy_responses + mutural_responses
-	return random.choice(responses)
-
+		return random.choice(mutural_responses)
 
