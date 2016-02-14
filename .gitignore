@@ -3,4 +3,8 @@
 *.pyc
 tags
 *.swp
+*.swo
 *.sqlite
+cache/
+.ipynb_*
+config.json
