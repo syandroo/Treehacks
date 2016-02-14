@@ -10,6 +10,8 @@ from generate_summary_json import get_message_data
 
 import text_analysis
 
+import os
+
 import random
 #messages = [
 #    '''
@@ -40,7 +42,6 @@ def segmentation(message_data):
     messages = merge_messages_by_sender(messages)
     labels = spectral_clustering(messages, num_clusters=5)
     # labels = adhoc_clustering(messages)
-    print labels
     return (channel_name, messages, labels)
 
 
@@ -52,7 +53,6 @@ def summarization(messages, labels):
                 [message['sender']['full_name'] + ': \n' +
                     message['text'] + '\n' for message in messages]
             )
-        print 'message', message
         highlight_sentences = text_analysis.groupSummary(message)
         summary = ' '.join(highlight_sentences)
         summaries.append(summary)
@@ -85,14 +85,13 @@ class SummarizationHandler(web.RequestHandler):
 
 class MainHandler(web.RequestHandler):
     def get(self):
+        access_token = os.getenv('TREEHACKS_SLACK_ACCESS_TOKEN')
         channel_id = self.get_argument('channel_id')
         channel_name = self.get_argument('channel_name')
         num_messages = self.get_argument('text')
 
-        message_data = get_message_data(channel_id, channel_name, num_messages, SLACK_TOKEN)
+        message_data = get_message_data(channel_id, channel_name, num_messages, access_token)
         message_data = json.loads(message_data)
-
-        print 'msg', message_data
 
         (channel_name, messages, labels) = segmentation(message_data)
 
