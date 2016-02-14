@@ -12,6 +12,6 @@ SLACK_TOKEN = os.environ.get('TREEHACKS_SLACK_ACCESS_TOKEN')
 
 CACHE_ROOT = 'cache/'
 
-SERVER_PORT = 5555
+SERVER_PORT = PORT = int(os.getenv('PORT', 8000))
 SERVER_ROOT = 'server'
 print '[server] loading config [done]'
