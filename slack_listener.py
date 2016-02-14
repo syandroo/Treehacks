@@ -6,12 +6,11 @@ from slackclient import SlackClient  # https://github.com/slackhq/python-slackcl
 
 
 # token found at https://api.slack.com/web#authentication
-
 def connect_to_slack(access_token):
     if not access_token:
         access_token = str(raw_input("Enter your developer access token: "))
     sc = SlackClient(access_token)
-    if sc.rtm_connect():
+    if sc:
         return sc
     else:
         raise RuntimeError("connection failed! invalid token?")
@@ -65,6 +64,3 @@ def get_messages(user_id_to_name_map, channel_id, channel_name, slack_client, li
     else:
         raise RuntimeError('bad connection to slack api! tried to hit channels.history')
 
-
-def send_message(message, channel_id, slack_client):
-    slack_client.rtm_send_message(channel_id, message)

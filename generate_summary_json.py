@@ -7,7 +7,7 @@ import slack_listener as slack
 
 
 # 1000 is the max number of messages Slack will return
-def generate_summary_json(member_id, channel_id, channel_name, num_messages=1000, access_token=None):
+def get_message_data(channel_id, channel_name, num_messages=1000, access_token=None):
     # get GroupMe message stream
     # group_data, access_token = groupme_listener.intiate_groupme_interaction()
     # messages_info, messages_text_only = groupme_listener.process_group_data(group_data, access_token)
