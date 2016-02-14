@@ -9,5 +9,5 @@ with open('config.json', 'r') as f:
 CACHE_ROOT = 'cache/'
 
 SERVER_PORT = 8889
-
+SERVER_ROOT = 'server'
 print '[server] loading config [done]'

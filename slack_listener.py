@@ -24,8 +24,9 @@ def map_user_id_to_names(slack_client):
     if member_data['ok']:
         all_members = {}
         members = member_data['members']
+        print 'members', members
         for member in members:
-            if not member['is_bot']:
+            if 'is_bot' in member and not member['is_bot']:
                 member_id = member['id']
                 try:
                     full_name = member['profile']['real_name']

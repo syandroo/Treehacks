@@ -4,12 +4,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Segmentation Visualization</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
 
         <style>
         div.container {
-        	width: 400px;
-        	margin-left: auto;
-        	margin-right: auto;
+            width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .list { 
@@ -91,18 +92,22 @@
         for(var i = 0; i < messages.length; i++) {
             var message = messages[i];
             $('#messages').append(
-                "<li id='message_" + i + "'>" + message.text + '</li>'
+                "<li id='message_" + i + "'>" + 
+                    "@" + message.sender.nickname + ":" +
+                    "<br>" +
+                    message.text +
+                '</li>'
             );
         }
 
-        for(var label of $.unique(labels.slice(0))) {
+        for(var label of _.uniq(labels.slice(0)).sort()) {
             $('#labels').append(
                 "<span class='label' id='label_ctrl_" + label + "'> " + label + '</span>'
             );
 
-            $('#label_ctrl_' + label).css('background-color', labelColors[label]);
-
             labelColors.push(getRandomLightColor());
+
+            $('#label_ctrl_' + label).css('background-color', labelColors[label]);
 
             $('#label_ctrl_' + label).hover(function(label) {
                 for(var i = 0; i < messages.length; i++) {
@@ -123,6 +128,7 @@
     </script>
 
     <div class="container">
+        <h2>#{{channel_name}}</h2>
         <div id="labels">
         Topics:
         </div>
