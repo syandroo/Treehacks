@@ -2,5 +2,6 @@ Flask==0.10.1
 nltk
 SlackClient
 numpy>=1.6.1
+scipy>=0.9
 sklearn
 tornado
