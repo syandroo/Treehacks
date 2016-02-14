@@ -8,10 +8,10 @@ print '[server] loading config'
 # import groupme_listener
 import os
 
-SLACK_TOKEN = os.environ.get('TEST_TEAM_SLACK_ACCESS_TOKEN')
+SLACK_TOKEN = os.environ.get('TREEHACKS_SLACK_ACCESS_TOKEN')
 
 CACHE_ROOT = 'cache/'
 
-SERVER_PORT = 80
+SERVER_PORT = 5555
 SERVER_ROOT = 'server'
 print '[server] loading config [done]'
