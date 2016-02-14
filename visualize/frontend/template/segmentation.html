@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Segmentation Visualization</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+        <style>
+        div.container {
+        	width: 400px;
+        	margin-left: auto;
+        	margin-right: auto;
+        }
+
+        .list { 
+          margin-left: 0px;
+        }
+        .list ol {
+            list-style-type: none;
+            font: italic;
+            font-size: 17;
+            color: #999;
+        }
+        .list ol li {
+            margin-left: 0px;
+            margin-top: 0px;
+
+            padding:10px 10px;
+            
+            /*border-left:#909090 5px solid;*/
+            line-height:150%;
+            -webkit-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* Saf3.2+, Chrome */
+            -moz-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* FF4+ */
+            -ms-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* IE10 */
+            -o-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* Opera 10.5+ */
+            transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;
+        }
+
+
+        .list ol li p  {
+          color: #000;
+          font: normal 17px Helvetica;
+        }
+
+        .list ol li:hover{
+            background-color: #FFD204;
+            color: black;
+          /*box-shadow: 3px 3px 10px #000;*/
+        }
+
+        .label {
+            width: 50px;
+            display: inline-block;
+            margin-right: 5px;
+            text-align: center;
+            background: #ddeeee;
+            -webkit-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* Saf3.2+, Chrome */
+            -moz-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* FF4+ */
+            -ms-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* IE10 */
+            -o-transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;  /* Opera 10.5+ */
+            transition: background-color 0.2s, margin-top 0.2s, margin-bottom 0.2s;
+        }
+
+        .label:hover {
+            background: #aaeeee;
+        }
+
+        </style>
+    </head>
+    
+    <body>
+
+    <script>
+    var data = {%raw data%}
+    var messages = data.messages;
+    var labels = data.labels;
+    var labelColors = [];
+
+    function getRandomLightColor() {
+        var letters = '9abcdef'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * letters.length)];
+        }
+        console.log(color);
+        return color;
+    }
+
+
+    $(document).ready(function() {
+        for(var i = 0; i < messages.length; i++) {
+            var message = messages[i];
+            $('#messages').append(
+                "<li id='message_" + i + "'>" + message.text + '</li>'
+            );
+        }
+
+        for(var label of $.unique(labels.slice(0))) {
+            $('#labels').append(
+                "<span class='label' id='label_ctrl_" + label + "'> " + label + '</span>'
+            );
+
+            $('#label_ctrl_' + label).css('background-color', labelColors[label]);
+
+            labelColors.push(getRandomLightColor());
+
+            $('#label_ctrl_' + label).hover(function(label) {
+                for(var i = 0; i < messages.length; i++) {
+                    if(labels[i] == label) {
+                        $('#message_' + i).css('background-color', labelColors[label]);
+                        $('#message_' + i + ':hover').css('background-color', '#FFD204');
+                    }
+                }
+            }.bind(null, label));
+
+            $('#label_ctrl_' + label).mouseout(function(label) {
+                for(var i = 0; i < messages.length; i++) {
+                    $('#message_' + i).css('background-color', '#ffffff');
+                }
+            }.bind(null, label));
+        }
+    });
+    </script>
+
+    <div class="container">
+        <div id="labels">
+        Topics:
+        </div>
+        <div class="list">
+            <ol id="messages">
+
+            </ol>
+        </div>
+    </div>
+    </body>
+</html>
