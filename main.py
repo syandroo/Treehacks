@@ -11,6 +11,7 @@ from __future__ import print_function
 
 import os
 import sys
+import urllib2
 
 import groupme_listener
 import text_analysis
@@ -77,10 +78,10 @@ def on_intent(intent_request, session):
     intent_name = intent_request['intent']['name']
 
     # Dispatch to your skill's intent handlers
-    if intent_name == "MyColorIsIntent":
-        return set_color_in_session(intent, session)
-    elif intent_name == "WhatsMyColorIntent":
-        return get_color_from_session(intent, session)
+    if intent_name == "MyChannelIsIntent":
+        return set_channel_in_session(intent, session)
+    elif intent_name == "WhatIsMyChannel":
+        return get_channel_from_session(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     else:
@@ -107,17 +108,87 @@ def get_welcome_response():
     session_attributes = {}
     card_title = "Welcome!"
     speech_output = "Hello! I'm pleased to meet you! " \
-                    "Tired of scrolling through all the messages from your friends? I am here to help you!" \
-                    "Please tell me what channel you would like to listen to"\
+                    "Tired of scrolling through all the messages from your friends? I am here to help you! " \
+                    "Please tell me what channel you would like to listen to. "\
                     "The default is 55"
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
-    reprompt_text = "Please tell me what channel you would like to listen to, by saying" \
+    reprompt_text = "Please tell me what channel you would like to listen to, by saying. " \
                     "I would like to listen to channel 55"
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
+    #return build_response({}, build_speechlet_response("card_title", "This is welcome", "", False))
+
+
+def set_channel_in_session(intent, session):
+    #return build_response({}, build_speechlet_response("card_title", "This is setup", "", False))
+    
+    # """ Sets the color in the session and prepares the speech to reply to the
+    # user.
+    # """
+
+    card_title = intent['name']
+    session_attributes = {}
+    should_end_session = False
+    if 'Channel' in intent['slots']:
+        channel_number = intent['slots']['Channel']['value']
+        #url = 'http://wwww.whatever.deployer'
+        #req = urllib2.Request(url, channel_number)
+        #response = urllib2.urlopen(req).read()
+        response = "hello there"
+        session_attributes = create_channel_attributes(chanzznel_number)
+        speech_output = "This is the most recent topic that is going on in channel" + \
+                        channel_number + \
+                        response
+        reprompt_text = "What else would you like to know?"
+    else:
+        speech_output = "I'm not sure which channel you would like to listen to. " \
+                        "Wanna set it one more time?"
+        reprompt_text = "I'm still not sure which channel you are trying to listen to" \
+                        "You can tell me the number of the channel by saying, " \
+                        "I would like to listen to channel 55."
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, reprompt_text, should_end_session))
+    # session_attributes = {}
+    # card_title = "Welcome!"
+    # speech_output = "Hello! I'm pleased to meet you! " \
+    #                 "Tired of scrolling through all the messages from your friends? I am here to help you!" \
+    #                 "Please tell me what channel you would like to listen to"\
+    #                 "The default is 55"
+    # If the user either does not reply to the welcome message or says something
+    # that is not understood, they will be prompted again with this text.
+    # reprompt_text = "Please tell me what channel you would like to listen to, by saying" \
+    #                 "I would like to listen to channel 55"
+    # should_end_session = False
+    # return build_response(session_attributes, build_speechlet_response(
+    #     card_title, speech_output, reprompt_text, should_end_session))
+
+
+def create_channel_attributes(channel_number):
+    return {"Channel_Number": channel_number}
+
+def get_channel_from_session(intent, session):
+    #return build_response({}, build_speechlet_response("card_title", "This is welcome", "", False))
+    #     card_title, speech_output, reprompt_text, should_end_session))
+    session_attributes = {}
+    reprompt_text = None
+
+    if "Channel_Number" in session.get('attributes', {}):
+        Channel_Number = session['attributes']['Channel_Number']
+        speech_output = "Your current channel is " + Channel_Number
+        should_end_session = False
+    else:
+        speech_output = "I'm not sure what your channel number is " \
+                        "You can always reset the channel number"
+        should_end_session = False
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
 
 # --------------- Helpers that build all of the responses ----------------------
 

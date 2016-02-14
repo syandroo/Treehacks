@@ -5,6 +5,7 @@ from slackclient import SlackClient  # https://github.com/slackhq/python-slackcl
 
 # token found at https://api.slack.com/web#authentication
 
+channel_number = 55; #default
 
 def connect_to_slack():
     access_token = "xoxb-21293612517-YlKw0nxVwtjXjUwvN0IrzI0Y"
@@ -52,13 +53,18 @@ def get_channels(team_data):
         print i, name
     try:
         #channel_number = int(raw_input("Enter channel number to summarize: "))
-        channel_number = 55
+        channel_number = give_channel()
         # place holder
         channel = channels[channel_number]
     except ValueError:
         print("NaN! Try again!")
     return channel
 
+def set_channel(user_set_channel_number):
+    channel_number = user_set_channel_number
+
+def give_channel():
+    return channel_number;
 
 def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, limit=-1):
     channel = get_channels(team_data)
