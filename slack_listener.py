@@ -7,7 +7,7 @@ from slackclient import SlackClient  # https://github.com/slackhq/python-slackcl
 
 
 def connect_to_slack():
-    access_token = str(raw_input("Enter your developer access token: "))
+    access_token = "xoxb-21293612517-YlKw0nxVwtjXjUwvN0IrzI0Y"
     sc = SlackClient(access_token)
     if sc.rtm_connect():
         response = sc.api_call('rtm.start')
@@ -22,10 +22,10 @@ def map_user_id_to_names(slack_client):
     member_data = json.loads(response)
     if member_data['ok']:
         all_members = {}
-        members = member_data['members']
+        members = member_data.get('members')
         for member in members:
-            if not member['is_bot']:
-                member_id = member['id']
+            if not member.get('is_bot'):
+                member_id = member.get('id')
                 try:
                     full_name = member['profile']['real_name']
                     first_name = member['profile']['first_name']
@@ -39,6 +39,11 @@ def map_user_id_to_names(slack_client):
         raise RuntimeError("bad connection to slack api! tried to hit users.list")
     return all_members
 
+'''
+change this so it can react to echo's command
+This probably needs to be changed
+'''
+
 
 def get_channels(team_data):
     channels = team_data['channels']
@@ -46,7 +51,9 @@ def get_channels(team_data):
         name = channel['name']
         print i, name
     try:
-        channel_number = int(raw_input("Enter channel number to summarize: "))
+        #channel_number = int(raw_input("Enter channel number to summarize: "))
+        channel_number = 55
+        # place holder
         channel = channels[channel_number]
     except ValueError:
         print("NaN! Try again!")
