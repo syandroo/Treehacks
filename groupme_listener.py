@@ -7,18 +7,18 @@ import re
 from text_processor import sanitize_text
 
 def intiate_groupme_interaction():
-    access_token = str(raw_input("Enter your developer access token:"))
+    access_token = str(raw_input("Enter your developer access token: "))
     # returns a list of all the groups accessible with given access token
     response = requests.get('https://api.groupme.com/v3/groups?token='+access_token)
     data = response.json()
     if data['response'] == []:
-        print("No accessible groups")
+        print "No accessible groups"
         return
     for i in xrange(len(data['response'])):
         group = data['response'][i]['name']
         print i, group
     try:
-        group_number = int(raw_input('Enter group number to analyze:'))
+        group_number = int(raw_input("Enter group number to summarize: "))
     except ValueError:
         print("NaN! Try again!")
     group_data = data['response'][group_number]
