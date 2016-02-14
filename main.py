@@ -17,7 +17,7 @@ inputText = "We spend a lot of time thinking about web API design, and we learn 
 DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def main(event, context):
+def main():
     # get GroupMe message stream
     # group_data, access_token = groupme_listener.intiate_groupme_interaction()
     # messages_info, messages_text_only = groupme_listener.process_group_data(group_data, access_token)
@@ -30,4 +30,4 @@ def main(event, context):
     
 
 if __name__ == '__main__':
-    main(event, context)
+    main()
