@@ -1,5 +1,5 @@
 """
-Routes and views for the flask application.
+Routes and views for the Flask application.
 """
 
 from flask import render_template, request
