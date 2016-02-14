@@ -52,8 +52,8 @@ def taxonomy(data, call=None):
 
 def extract_all(data):
     resp = dict(data)
-    text = get_sanitized(data)
-    print 'text', text
+    # text = get_sanitized(data)
+    text = data['text']
     # request feature extraction.
     text_hash = hashlib.sha256(text.encode('ascii', 'ignore')).hexdigest()
     print 'text_hash', text_hash
@@ -70,6 +70,7 @@ def extract_all(data):
     whitelist = ['concepts', 'entities', 'keywords', 'taxonomy']
     for key in whitelist:
         if key not in call:
+            resp[key] = []
             continue
         resp[key] = call[key]
     return resp
