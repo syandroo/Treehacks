@@ -17,16 +17,17 @@ inputText = "We spend a lot of time thinking about web API design, and we learn 
 DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def main():
+def main(event, context):
     # get GroupMe message stream
     # group_data, access_token = groupme_listener.intiate_groupme_interaction()
     # messages_info, messages_text_only = groupme_listener.process_group_data(group_data, access_token)
 
     # get Slack channel message stream
     slack_team_data, sc = slack.connect_to_slack()
-    message_data = slack.get_unread_messages(slack_team_data, sc)
-    print message_data
+    user_id_to_name_map = slack.map_user_id_to_names(sc)
+    messages_data = slack.get_messages(slack_team_data, user_id_to_name_map, sc)
+    print messages_data
     
 
 if __name__ == '__main__':
-    main()
+    main(event, context)

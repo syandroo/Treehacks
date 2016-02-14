@@ -12,15 +12,37 @@ def connect_to_slack():
     if sc.rtm_connect():
         response = sc.api_call('rtm.start')
         team_data = json.loads(response)
+        return team_data, sc
     else:
-        print "connection failed! invalid token?"
-    return team_data, sc
+        raise RuntimeError("connection failed! invalid token?")
+
+
+def map_user_id_to_names(slack_client):
+    response = slack_client.api_call('users.list')
+    member_data = json.loads(response)
+    if member_data['ok']:
+        all_members = {}
+        members = member_data['members']
+        for member in members:
+            if not member['is_bot']:
+                member_id = member['id']
+                try:
+                    full_name = member['profile']['real_name']
+                    first_name = member['profile']['first_name']
+                    nickname = member['name']
+                except KeyError:  # some users have no name information
+                    email_name = member['profile']['email'].split('@')[0]  # best we can do, get email address
+                    full_name, first_name, nickname = email_name, email_name, email_name
+                all_members[member_id] = {'full_name': full_name, 'first_name': first_name,
+                                          'nickname': nickname}
+    else:
+        raise RuntimeError("bad connection to slack api! tried to hit users.list")
+    return all_members
 
 
 def get_channels(team_data):
     channels = team_data['channels']
-    is_member_channels = [channel for channel in channels if channel['is_member']]
-    for i, channel in enumerate(is_member_channels):
+    for i, channel in enumerate(channels):
         name = channel['name']
         print i, name
     try:
@@ -31,38 +53,26 @@ def get_channels(team_data):
     return channel
 
 
-def get_channel_id(channel):
-    channel_id = channel['id']
-    return channel_id
-
-
-def get_channel_name(channel):
-    channel_name = channel['name']
-    return channel_name
-
-
-def get_num_unread_messages(channel):
-    num_unread_messages = channel['unread_count']
-    return num_unread_messages
-
-
-def get_unread_messages(team_data, slack_client):
+def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, limit=-1):
     channel = get_channels(team_data)
-    channel_id = get_channel_id(channel)
-    channel_name = get_channel_name(channel)
-    num_unread_messages = get_num_unread_messages(channel)
-    message_data = {'channel_name': channel_name, 'num_unread_messages': num_unread_messages,
-                    'messages': []}
+    channel_id = channel['id']
+    channel_name = channel['name']
+    messages_data = {'channel_name': channel_name, 'messages': []}
     response = slack_client.api_call('channels.history', channel=channel_id)
     channel_data = json.loads(response)
-    for message in channel_data['messages']:
-        if message['type'] == 'message' and 'subtype' not in message:
-            message_data['messages'].append(message['text'])
-    return message_data
-
-
-
-
-
-
+    if channel_data['ok']:
+        for message in channel_data['messages']:
+            if message['type'] == 'message' and 'subtype' not in message:
+                text = message['text'] + '.'
+                sender = user_id_to_name_map[message['user']]
+                timestamp = message['ts']
+                emojis = []
+                try:
+                    emojis = [{'name': name, 'count': count} for reaction in message['reactions']]
+                except: KeyError  # no emojis in the message
+                message_data = {'text': text, 'emojis': emojis, 'sender': sender, 'timestamp': timestamp}
+                messages_data['messages'].append(message_data)
+        return messages_data
+    else:
+        raise RuntimeError('bad connection to slack api! tried to hit channels.history')
 
