@@ -52,7 +52,7 @@ def get_channels(team_data, channel_number=None):
             channel_number = int(raw_input("Enter channel number to summarize: "))
         channel = channels[channel_number]
     except ValueError:
-        print("NaN! Try again!")
+        print "NaN! Try again!"
     return channel
 
 
@@ -60,22 +60,31 @@ def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, lim
     channel = get_channels(team_data, channel_number)
     channel_id = channel['id']
     channel_name = channel['name']
-    messages_data = {'channel_name': channel_name, 'messages': []}
+    messages_data = {'channel_name': channel_name, 'channel_id': channel_id, 'messages': []}
     response = slack_client.api_call('channels.history', channel=channel_id)
     channel_data = json.loads(response)
     if channel_data['ok']:
         for message in channel_data['messages']:
             if message['type'] == 'message' and 'subtype' not in message:
                 text = message['text'] + '.'
+                message_id = message['id']
                 sender = user_id_to_name_map[message['user']]
                 timestamp = message['ts']
                 emojis = []
                 try:
                     emojis = [{'name': name, 'count': count} for reaction in message['reactions']]
                 except: KeyError  # no emojis in the message
-                message_data = {'text': text, 'emojis': emojis, 'sender': sender, 'timestamp': timestamp}
+                message_data = {'text': text, 'emojis': emojis, 'sender': sender, 'timestamp': timestamp, 'message_id': message_id}
                 messages_data['messages'].append(message_data)
         return messages_data
     else:
         raise RuntimeError('bad connection to slack api! tried to hit channels.history')
+
+
+def send_message(message, channel_id, slack_client):
+    slack_client.rtm_send_message(channel_id, message) 
+
+
+
+
 
