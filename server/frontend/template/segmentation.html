@@ -20,7 +20,7 @@
             list-style-type: none;
             font: italic;
             font-size: 17;
-            color: #999;
+            color: #555;
         }
         .list ol li {
             margin-left: 0px;
@@ -110,19 +110,26 @@
             $('#label_ctrl_' + label).css('background-color', labelColors[label]);
 
             $('#label_ctrl_' + label).hover(function(label) {
+                // clear old color.
+                for(var i = 0; i < messages.length; i++) {
+                    $('#message_' + i).css('display', 'none');
+                    $('#message_' + i).css('background-color', '#ffffff');
+                }
+                // apply new color.
                 for(var i = 0; i < messages.length; i++) {
                     if(labels[i] == label) {
+                        $('#message_' + i).css('display', 'block');
                         $('#message_' + i).css('background-color', labelColors[label]);
                         $('#message_' + i + ':hover').css('background-color', '#FFD204');
                     }
                 }
             }.bind(null, label));
 
-            $('#label_ctrl_' + label).mouseout(function(label) {
-                for(var i = 0; i < messages.length; i++) {
-                    $('#message_' + i).css('background-color', '#ffffff');
-                }
-            }.bind(null, label));
+            // $('#label_ctrl_' + label).mouseout(function(label) {
+            //     for(var i = 0; i < messages.length; i++) {
+            //         $('#message_' + i).css('background-color', '#ffffff');
+            //     }
+            // }.bind(null, label));
         }
     });
     </script>
