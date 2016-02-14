@@ -1,2 +1,6 @@
 Flask==0.10.1
-
+nltk
+SlackClient
+sklearn
+numpy
+tornado

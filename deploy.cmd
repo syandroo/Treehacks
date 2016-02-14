@@ -147,6 +147,13 @@ IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
   )
 )
 
+IF EXIST "autocomplete.py"(
+  echo sweet!
+  env\scripts\python autocomplete.py
+)
+
+echo welp 
+
 popd
 
 :postPython
