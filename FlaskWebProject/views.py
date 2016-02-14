@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import render_template, request
 from FlaskWebProject import app
 
-from generate_summary_json import generate_summary_json
+# from generate_summary_json import generate_summary_json
 
 
 @app.route('/')
