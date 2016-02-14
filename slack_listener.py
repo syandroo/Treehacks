@@ -6,8 +6,9 @@ from slackclient import SlackClient  # https://github.com/slackhq/python-slackcl
 # token found at https://api.slack.com/web#authentication
 
 
-def connect_to_slack():
-    access_token = str(raw_input("Enter your developer access token: "))
+def connect_to_slack(access_token=None):
+    if not access_token:
+        access_token = str(raw_input("Enter your developer access token: "))
     sc = SlackClient(access_token)
     if sc.rtm_connect():
         response = sc.api_call('rtm.start')
@@ -40,21 +41,22 @@ def map_user_id_to_names(slack_client):
     return all_members
 
 
-def get_channels(team_data):
+def get_channels(team_data, channel_number=None):
     channels = team_data['channels']
     for i, channel in enumerate(channels):
         name = channel['name']
         print i, name
     try:
-        channel_number = int(raw_input("Enter channel number to summarize: "))
+        if not channel_number:
+            channel_number = int(raw_input("Enter channel number to summarize: "))
         channel = channels[channel_number]
     except ValueError:
         print("NaN! Try again!")
     return channel
 
 
-def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, limit=-1):
-    channel = get_channels(team_data)
+def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, limit=-1, channel_number=None):
+    channel = get_channels(team_data, channel_number)
     channel_id = channel['id']
     channel_name = channel['name']
     messages_data = {'channel_name': channel_name, 'messages': []}
