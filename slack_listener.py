@@ -1,19 +1,17 @@
 import time
 import json
+import re
+
 from slackclient import SlackClient  # https://github.com/slackhq/python-slackclient
 
 
 # token found at https://api.slack.com/web#authentication
-
-channel_number = 55; #default
-
-def connect_to_slack():
-    access_token = "xoxb-21293612517-YlKw0nxVwtjXjUwvN0IrzI0Y"
+def connect_to_slack(access_token):
+    if not access_token:
+        access_token = str(raw_input("Enter your developer access token: "))
     sc = SlackClient(access_token)
-    if sc.rtm_connect():
-        response = sc.api_call('rtm.start')
-        team_data = json.loads(response)
-        return team_data, sc
+    if sc:
+        return sc
     else:
         raise RuntimeError("connection failed! invalid token?")
 
@@ -23,10 +21,10 @@ def map_user_id_to_names(slack_client):
     member_data = json.loads(response)
     if member_data['ok']:
         all_members = {}
-        members = member_data.get('members')
+        members = member_data['members']
         for member in members:
-            if not member.get('is_bot'):
-                member_id = member.get('id')
+            if 'is_bot' in member and not member['is_bot']:
+                member_id = member['id']
                 try:
                     full_name = member['profile']['real_name']
                     first_name = member['profile']['first_name']
@@ -40,43 +38,20 @@ def map_user_id_to_names(slack_client):
         raise RuntimeError("bad connection to slack api! tried to hit users.list")
     return all_members
 
-'''
-change this so it can react to echo's command
-This probably needs to be changed
-'''
 
-
-def get_channels(team_data):
-    channels = team_data['channels']
-    for i, channel in enumerate(channels):
-        name = channel['name']
-        print i, name
-    try:
-        #channel_number = int(raw_input("Enter channel number to summarize: "))
-        channel_number = give_channel()
-        # place holder
-        channel = channels[channel_number]
-    except ValueError:
-        print("NaN! Try again!")
-    return channel
-
-def set_channel(user_set_channel_number):
-    channel_number = user_set_channel_number
-
-def give_channel():
-    return channel_number;
-
-def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, limit=-1):
-    channel = get_channels(team_data)
-    channel_id = channel['id']
-    channel_name = channel['name']
-    messages_data = {'channel_name': channel_name, 'messages': []}
-    response = slack_client.api_call('channels.history', channel=channel_id)
+def get_messages(user_id_to_name_map, channel_id, channel_name, slack_client, limit):
+    messages_data = {'channel_name': channel_name, 'channel_id': channel_id, 'messages': []}
+    response = slack_client.api_call('channels.history', count=limit, channel=channel_id)
     channel_data = json.loads(response)
     if channel_data['ok']:
         for message in channel_data['messages']:
             if message['type'] == 'message' and 'subtype' not in message:
                 text = message['text'] + '.'
+                # replace user ids in text with user names!
+                all_user_ids = re.findall(r'<@([^\s\.]*)>', text)
+                for user_id in all_user_ids:
+                    user = user_id_to_name_map[user_id]['nickname']
+                    text = text.replace('<@%s>' % user_id, '@' + user)
                 sender = user_id_to_name_map[message['user']]
                 timestamp = message['ts']
                 emojis = []

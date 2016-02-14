@@ -3,4 +3,9 @@
 *.pyc
 tags
 *.swp
+*.swo
 *.sqlite
+cache/
+.ipynb_*
+config.json
+oauth_constants.py

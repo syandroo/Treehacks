@@ -4,12 +4,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Segmentation Visualization</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
 
         <style>
         div.container {
-        	width: 400px;
-        	margin-left: auto;
-        	margin-right: auto;
+            width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .list { 
@@ -19,7 +20,7 @@
             list-style-type: none;
             font: italic;
             font-size: 17;
-            color: #999;
+            color: #555;
         }
         .list ol li {
             margin-left: 0px;
@@ -43,7 +44,7 @@
         }
 
         .list ol li:hover{
-            background-color: #FFD204;
+            /*background-color: #FFD204;*/
             color: black;
           /*box-shadow: 3px 3px 10px #000;*/
         }
@@ -71,9 +72,8 @@
     <body>
 
     <script>
-    var data = {%raw data%}
-    var messages = data.messages;
-    var labels = data.labels;
+    var summaries = {%raw summaries%};
+    var labelset = {%raw labelset%};
     var labelColors = [];
 
     function getRandomLightColor() {
@@ -88,41 +88,42 @@
 
 
     $(document).ready(function() {
-        for(var i = 0; i < messages.length; i++) {
-            var message = messages[i];
+        for(var i = 0; i < summaries.length; i++) {
+            var summary = summaries[i];
             $('#messages').append(
-                "<li id='message_" + i + "'>" + message.text + '</li>'
+                "<li id='message_" + i + "'>" + 
+                    summary.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+                '</li>'
             );
         }
 
-        for(var label of $.unique(labels.slice(0))) {
+        for(var label of labelset) {
             $('#labels').append(
                 "<span class='label' id='label_ctrl_" + label + "'> " + label + '</span>'
             );
 
-            $('#label_ctrl_' + label).css('background-color', labelColors[label]);
-
             labelColors.push(getRandomLightColor());
 
-            $('#label_ctrl_' + label).hover(function(label) {
-                for(var i = 0; i < messages.length; i++) {
-                    if(labels[i] == label) {
-                        $('#message_' + i).css('background-color', labelColors[label]);
-                        $('#message_' + i + ':hover').css('background-color', '#FFD204');
-                    }
-                }
-            }.bind(null, label));
+            $('#label_ctrl_' + label).css('background-color', labelColors[label]);
 
-            $('#label_ctrl_' + label).mouseout(function(label) {
-                for(var i = 0; i < messages.length; i++) {
+            $('#label_ctrl_' + label).hover(function(label) {
+                // clear old color.
+                for(var i = 0; i < summaries.length; i++) {
+                    $('#message_' + i).css('display', 'none');
                     $('#message_' + i).css('background-color', '#ffffff');
                 }
+
+                // apply new color.
+                $('#message_' + label).css('display', 'block');
+                $('#message_' + label).css('background-color', labelColors[label]);
+
             }.bind(null, label));
         }
     });
     </script>
 
     <div class="container">
+        <h2>#{{channel_name}}</h2>
         <div id="labels">
         Topics:
         </div>
