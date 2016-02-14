@@ -92,8 +92,7 @@
             var summary = summaries[i];
             $('#messages').append(
                 "<li id='message_" + i + "'>" + 
-                    "<br>" +
-                    summary +
+                    summary.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
                 '</li>'
             );
         }

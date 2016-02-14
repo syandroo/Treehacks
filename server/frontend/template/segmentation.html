@@ -95,12 +95,12 @@
                 "<li id='message_" + i + "'>" + 
                     "@" + message.sender.nickname + ":" +
                     "<br>" +
-                    message.text +
+                    message.text.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
                 '</li>'
             );
         }
 
-        for(var label of _.uniq(labels.slice(0)).sort()) {
+        for(var label of _.uniq(labels.slice(0))) {
             $('#labels').append(
                 "<span class='label' id='label_ctrl_" + label + "'> " + label + '</span>'
             );

@@ -3,7 +3,8 @@ from tornado import (ioloop, web)
 import simplejson as json
 
 from .config import SERVER_ROOT
-from segmentation.cluster import spectral_clustering, split_messages
+from segmentation.cluster import spectral_clustering, split_messages, adhoc_clustering
+from segmentation.preprocessing.slack import merge_messages_by_sender
 
 import text_analysis
 #messages = [
@@ -30,23 +31,27 @@ except Exception as e:
 
 
 def segmentation():
-    messages_data = get_slack_messages(15)
+    messages_data = get_slack_messages(16)
     channel_name = messages_data['channel_name']
     messages = messages_data['messages']
+    messages = merge_messages_by_sender(messages)
     labels = spectral_clustering(messages, num_clusters=5)
+    # labels = adhoc_clustering(messages)
+    print labels
     return (channel_name, messages, labels)
 
 
 def summarization(messages, labels):
     messages_split = split_messages(messages, labels)
-    messages_stacked = [' '.join(
-                                [message['text'] for message in messages]
-                            ) for messages in messages_split
-                        ]
     summaries = []
-    for message in messages_stacked:
-        print message
-        summary = text_analysis.groupSummary(message)
+    for messages in messages_split:
+        message = ' '.join(
+                [message['sender']['full_name'] + ': \n' +
+                    message['text'] + '\n' for message in messages]
+            )
+        print 'message', message
+        highlight_sentences = text_analysis.groupSummary(message)
+        summary = ' '.join(highlight_sentences)
         summaries.append(summary)
     return summaries
 

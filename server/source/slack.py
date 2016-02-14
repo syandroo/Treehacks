@@ -19,7 +19,7 @@ def sync(channel_number):
 
 def sync_process(channel_number):
     old_stdout = sys.stdout
-    sys.stdout = open(path.join(CACHE_ROOT, "slack_listener.out"), "w")
+    #sys.stdout = open(path.join(CACHE_ROOT, "slack_listener.out"), "w")
     while True:
         message_data = sync(channel_number)
         with open(path.join(CACHE_ROOT, 'slack_%d' % channel_number), 'w') as f:
