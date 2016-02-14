@@ -24,8 +24,9 @@ def main():
 
     # get Slack channel message stream
     slack_team_data, sc = slack.connect_to_slack()
-    message_data = slack.get_unread_messages(slack_team_data, sc)
-    print message_data
+    user_id_to_name_map = slack.map_user_id_to_names(sc)
+    messages_data = slack.get_messages(slack_team_data, user_id_to_name_map, sc)
+    print messages_data
     
 
 if __name__ == '__main__':
