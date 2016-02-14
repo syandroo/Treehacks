@@ -1,0 +1,15 @@
+Flask==0.10.1
+nltk
+SlackClient
+sklearn
+numpy
+alchemyapi
+shelve
+codecs
+hashlib
+doctest
+re
+simplejson
+multiprocessing
+tornado 
+random
