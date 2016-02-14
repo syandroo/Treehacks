@@ -2,21 +2,28 @@
 from tornado import (ioloop, web)
 import simplejson as json
 
-from segmentation.cluster import spectral_clustering
-messages = [
-    '''
-    Don't forget it's Valentine's Day tomorrow!!
-                    Put your name down if you wanna meet your hacker valentine this weekend
-    ''',
-    '''
-    I would like to celebrate Valentine's Day with tea!
-    ''',
-    '''
-    which parrot mini drone?
-    I\u2019ve had some success using this with a Parrot Spider mini drone:
-    '''
-]
-labels = spectral_clustering(messages, num_clusters=2)
+#from segmentation.cluster import spectral_clustering
+#messages = [
+#    '''
+#    Don't forget it's Valentine's Day tomorrow!!
+#                    Put your name down if you wanna meet your hacker valentine this weekend
+#    ''',
+#    '''
+#    I would like to celebrate Valentine's Day with tea!
+#    ''',
+#    '''
+#    which parrot mini drone?
+#    I\u2019ve had some success using this with a Parrot Spider mini drone:
+#    '''
+#]
+#labels = spectral_clustering(messages, num_clusters=2)
+
+# start syncing threads.
+try:
+    from .source.slack import start_sync as start_slack_sync
+    start_slack_sync(15)
+except Exception as e:
+    print '[server] error: ', e.message
 
 SERVER_ROOT = 'visualize'
 
@@ -43,9 +50,5 @@ settings = {
     "template_path": SERVER_ROOT + "/frontend/template"
 }
 
-if __name__ == "__main__":
-    application = web.Application(handlers, **settings)
-    application.listen(8889, address="0.0.0.0")
-    ioloop.IOLoop.current().start()
 
 
