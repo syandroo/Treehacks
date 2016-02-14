@@ -85,7 +85,7 @@ class SummarizationHandler(web.RequestHandler):
 
 class MainHandler(web.RequestHandler):
     def get(self):
-        access_token = os.getenv('TREEHACKS_SLACK_ACCESS_TOKEN')
+        access_token = 'xoxb-21293612517-YlKw0nxVwtjXjUwvN0IrzI0Y'
         channel_id = self.get_argument('channel_id')
         channel_name = self.get_argument('channel_name')
         num_messages = self.get_argument('text')
