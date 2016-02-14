@@ -2,7 +2,7 @@
 # coding: utf-8
 import json
 
-import groupme_listener
+# import groupme_listener
 import slack_listener as slack
 
 
