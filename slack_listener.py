@@ -1,5 +1,6 @@
 import time
 import json
+import re
 from slackclient import SlackClient  # https://github.com/slackhq/python-slackclient
 
 
@@ -67,14 +68,18 @@ def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, lim
         for message in channel_data['messages']:
             if message['type'] == 'message' and 'subtype' not in message:
                 text = message['text'] + '.'
-                message_id = message['id']
+                # replace user ids in text with user names!
+                all_user_ids = re.findall(r'<@([^\s\.]*)>', text)
+                for user_id in all_user_ids:
+                    user = user_id_to_name_map[user_id]['nickname']
+                    text = text.replace('<@%s>' % user_id, '@' + user)
                 sender = user_id_to_name_map[message['user']]
                 timestamp = message['ts']
                 emojis = []
                 try:
                     emojis = [{'name': name, 'count': count} for reaction in message['reactions']]
                 except: KeyError  # no emojis in the message
-                message_data = {'text': text, 'emojis': emojis, 'sender': sender, 'timestamp': timestamp, 'message_id': message_id}
+                message_data = {'text': text, 'emojis': emojis, 'sender': sender, 'timestamp': timestamp}
                 messages_data['messages'].append(message_data)
         return messages_data
     else:
@@ -82,7 +87,7 @@ def get_messages(team_data, user_id_to_name_map, slack_client, unread=False, lim
 
 
 def send_message(message, channel_id, slack_client):
-    slack_client.rtm_send_message(channel_id, message) 
+    slack_client.rtm_send_message(channel_id, message)
 
 
 
