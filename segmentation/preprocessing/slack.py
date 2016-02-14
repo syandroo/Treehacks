@@ -18,7 +18,7 @@ def find_mentions(text):
     >>> find_mentions('@andrew: what do you think of our @mentor_alexa')
     ['andrew', 'mentor_alexa']
     '''
-    return re.findall(r'@([^\s,.:?-]*)', text)
+    return re.findall(r'@([^\s,.:?]*)', text)
 
 
 def find_emojis(text):
@@ -47,19 +47,50 @@ def sanitize(text, list_of_phrases):
 
 def parse_body(text):
     data = {
-        'emojis': find_emojis(text),
+        'inline-emojis': find_emojis(text),
         'mentions': find_mentions(text),
         'urls': find_urls(text),
         'text': text,
     }
 
     sanitized = sanitize(text, ['@' + item for item in data['mentions']])
-    sanitized = sanitize(sanitized, [':' + item + ':' for item in data['emojis']])
+    sanitized = sanitize(sanitized, [':' + item + ':' for item in data['inline-emojis']])
     sanitized = sanitize(sanitized, data['urls'])
 
     data['sanitized'] = sanitized
 
     return data
+
+def merge_messages_by_sender(messages):
+    '''
+    if two neighboring messages are sent by the same person.
+    then we merge them.
+    '''
+    messages = sorted(messages, key=lambda message: float(message['timestamp']))
+    new_messages = []
+    prev_sender = None
+    prev_message = None
+    prev_text = u''
+    for message in messages:
+        if prev_sender and message['sender']['nickname'] == prev_sender:
+            prev_text += message['text']
+        else:
+            if prev_sender:
+                new_message = dict(prev_message)
+                new_message['text'] = prev_text
+                new_messages.append(new_message)
+            prev_text = message['text']
+            prev_sender = message['sender']['nickname']
+            prev_message = message
+
+    if prev_sender:
+        new_message = dict(prev_message)
+        new_message['text'] = prev_text
+        new_messages.append(new_message)
+
+    return new_messages
+
+
 
 doctest.testmod()
 
