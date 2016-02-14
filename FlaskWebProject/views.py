@@ -1,14 +1,15 @@
 """
 Routes and views for the Flask application.
 """
+import os
 
 from flask import render_template, request
 from FlaskWebProject import app
 
-from oauth_constants import TEST_TEAM_SLACK_ACCESS_TOKEN 
 from generate_summary_json import generate_summary_json
 
-global TEST_TEAM_SLACK_ACCESS_TOKEN
+
+ACCESS_TOKEN = os.getenv('TREEHACKS_SLACK_ACCESS_TOKEN')
 
 
 @app.route('/')
@@ -23,7 +24,7 @@ def home():
 
 # text is number of messages
 @app.route('/summarize', methods=['GET'])
-def summarize():
+def summarize(ACCESS_TOKEN):
     member_id = requests.args.get('user_id')
     channel_id = requests.args.get('channel_id')
     channel_name = requests.args.get('channel_name')
