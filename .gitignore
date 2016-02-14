@@ -8,3 +8,4 @@ tags
 cache/
 .ipynb_*
 config.json
+oauth_constants.py
