@@ -3,5 +3,4 @@ nltk
 SlackClient
 sklearn
 numpy
-codecs
-tornado 
+tornado
